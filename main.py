@@ -245,8 +245,8 @@ def callback_handler(call):
     data = call.data
     call_id = call.id
     if data.startswith('edit'):
-        command, price, qty = data.split('_')  # تغییر نام code به price
-        price = int(price)  # قیمت را تبدیل به عدد صحیح کنید
+        command, price, qty = data.split('_')  
+        price = int(price)  
         qty = int(qty)
         if qty == 0:
             bot.answer_callback_query(call_id, 'quantity can not be zero')
@@ -260,9 +260,9 @@ def callback_handler(call):
         bot.edit_message_reply_markup(cid, mid, reply_markup=None)
         
     elif data.startswith('buy'):
-        command, price, qty = data.split('_')  # استخراج قیمت و تعداد
-        price = int(price)  # تبدیل به عدد صحیح
-        qty = int(qty)  # تبدیل به عدد صحیح
+        command, price, qty = data.split('_')  
+        price = int(price) 
+        qty = int(qty)  
         sum_price = price * qty  # محاسبه قیمت کل
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton('cancel', callback_data='cancel'),
