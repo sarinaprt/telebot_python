@@ -8,21 +8,20 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from telebot.types import ReplyKeyboardMarkup,ReplyKeyboardRemove,InlineKeyboardMarkup,InlineKeyboardButton
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
-api=".............................."
+api="...................................."
 bot = telebot.TeleBot(api)  
 from datetime import datetime
 from datetime import datetime, timedelta
 
-chanel_cid=....................
-admin=[.......................]
+chanel_cid=..........................
+admin=[......................]
 
 command={
         'start' : 'your information and strt robat',
         'keybord': 'buttons ',
         'help':'instructions about keybord & /...',
         'ad_product':'add new product or update them',
-        'send_photo':'',
-        'rate_movie':''
+        'rate_movie':'is not ready'
 
         }
 
@@ -32,21 +31,21 @@ genres = ['وحشت', 'علمی تخیلی','اکشن', 'کمدی', 'درام','
 
 movies = {
     'وحشت': [
-        {'title':  'smile', 'year': 2020,'description':'داستان','price':123},
-        {'title': 'فیلم وحشتناک 2', 'year': 2021,'description':'داستان','price':1253}],
+        {'title':  'smile', 'year': 2020,'description':'داستان','price':123,'photo_link':''},
+        {'title': 'فیلم وحشتناک 2', 'year': 2021,'description':'داستان','price':1253,'photo_link':''},],
 'علمی تخیلی': [
-        {'title': 'فیلم علمی تخیلی 1', 'year': 2021,'description':'داستان','price':123},
-        {'title': 'فیلم علمی تخیلی 2', 'year': 2022,'description':'داستان','price':123}],
+        {'title': 'فیلم علمی تخیلی 1', 'year': 2021,'description':'داستان','price':123,'photo_link':''},
+        {'title': 'فیلم علمی تخیلی 2', 'year': 2022,'description':'داستان','price':123,'photo_link':''}],
     'کمدی': [
-        {'title': 'فیلم کمدی 1', 'year': 2019,'description':'داستان','price':123},
-        {'title': 'فیلم کمدی 2', 'year': 2020,'description':'داستان','price':123}],
+        {'title': 'فیلم کمدی 1', 'year': 2019,'description':'داستان','price':123,'photo_link':''},
+        {'title': 'فیلم کمدی 2', 'year': 2020,'description':'داستان','price':123,'photo_link':''}],
     'اکشن': [
-        {'title': 'فیلم کمدی 1', 'year': 2019,'description':'داستان','price':123},
-        {'title': 'فیلم کمدی 2', 'year': 2020,'description':'داستان','price':123}
+        {'title': 'فیلم کمدی 1', 'year': 2019,'description':'داستان','price':123,'photo_link':''},
+        {'title': 'فیلم کمدی 2', 'year': 2020,'description':'داستان','price':123,'photo_link':''}
     ],
     'درام': [
-        {'title': 'فیلم کمدی 1', 'year': 2019,'description':'داستان','price':123},
-        {'title': 'فیلم کمدی 2', 'year': 2020,'description':'داستان','price':123}
+        {'title': 'فیلم کمدی 1', 'year': 2019,'description':'داستان','price':123,'photo_link':''},
+        {'title': 'فیلم کمدی 2', 'year': 2020,'description':'داستان','price':123,'photo_link':''}
     ],
     'وسترن': [
         {'title': 'فیلم کمدی 1', 'year': 2019,'description':'داستان','price':123},
@@ -142,10 +141,20 @@ def send_welcome(message):
    cid = message.chat.id
    all_active(cid)
    inserttouser(message)
-   bot.reply_to(message, "سلام! برای دریافت اطلاعات پروفایل خود، لطفاً یک پیام ارسال کنید.\nاگر بدنبال فیلم ها میگردید کلمه _(فیلم)_ رو تایپ کنید ",parse_mode= 'Markdown')
+   bot.reply_to(message, "سلام! برای دریافت اطلاعات پروفایل خود، لطفاً یک پیام ارسال کنید.\nاگر بدنبال فیلم ها میگردید کلمه _(فیلم)_ رو تایپ کنید \n/help ",parse_mode= 'Markdown')
 
-
-@bot.message_handler(commands=['send_photo'])
+@bot.message_handler(commands=['help'])
+def command_help(message):
+    cid = message.chat.id
+    help_text = "The following commands are available: \n"
+    for key in command:  
+        help_text += "/" + key + ": "
+        help_text += command[key] + "\n"
+        
+    bot.send_message(cid, help_text)
+    
+    
+@bot.message_handler(commands=['ad_product'])
 def send_pho(message):
     cid=message.chat.id
     all_active(cid)
@@ -153,7 +162,7 @@ def send_pho(message):
     print(message.chat.first_name)
     if cid in admin:
         bot.reply_to(message,"این متن رو کپی کرده و اطلاعات رو تغییر بدید\n")
-        bot.send_message(cid,"name: گوشی هوشمند -- discription: گوشی با کیفیت بالا -- category: الکترونیک -- price:00 -- point_p: 5")
+        bot.send_message(cid,"name: smile-- discription: توضیحات-- category: وحشت -- price:120 -- point_p: 5")
     #bot.register_next_step_handler(message,photo_step)
     else:
         send_user_info(message)
@@ -245,8 +254,8 @@ def callback_handler(call):
     data = call.data
     call_id = call.id
     if data.startswith('edit'):
-        command, price, qty = data.split('_')  
-        price = int(price)  
+        command, price, qty = data.split('_')  # تغییر نام code به price
+        price = int(price)  # قیمت را تبدیل به عدد صحیح کنید
         qty = int(qty)
         if qty == 0:
             bot.answer_callback_query(call_id, 'quantity can not be zero')
@@ -260,9 +269,9 @@ def callback_handler(call):
         bot.edit_message_reply_markup(cid, mid, reply_markup=None)
         
     elif data.startswith('buy'):
-        command, price, qty = data.split('_')  
-        price = int(price) 
-        qty = int(qty)  
+        command, price, qty = data.split('_')  # استخراج قیمت و تعداد
+        price = int(price)  # تبدیل به عدد صحیح
+        qty = int(qty)  # تبدیل به عدد صحیح
         sum_price = price * qty  # محاسبه قیمت کل
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton('cancel', callback_data='cancel'),
@@ -383,8 +392,8 @@ def send_user_info(message):
     # print("===============================")
     # print(message.from_user.id)#5580972570
 
-    if message.text == "help":
-        bot.reply_to(message, '...................')    
+    if message.text == "help"  or "Help":
+        bot.reply_to(message, 'if you need help please click  /help')    
     else:    
         response = f"""
         شناسه کاربر: {user_id}
